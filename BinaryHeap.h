@@ -12,21 +12,24 @@
 using namespace std;
 
 
-void swap(int *x, int *y);
+void swap(int *x, int *y){
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+};
 
-// Бинарная куча: реализация через массив
+// Бинарная куча
 template <class T>
 class MinHeap {
     T *h;          // Элементы кучи
     int capacity;  // Размер кучи
     int size;      // Количество элементов
 public:
-    // == Конструктор ==
+    //Конструктор
     explicit MinHeap(int capacity) : capacity(capacity) {
         size = 0;
         h = new T[capacity];
     }
-    // Количество элементов в бинарной куче
     int getSize() {
         return size;
     }

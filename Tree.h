@@ -3,14 +3,10 @@
 #include <cwchar>
 #include <iostream>
 
-// == АТД (абстрактные типы данных) ==
 
-// n-арное дерево - целевой АТД, указанный в варианте задания
-// T - тип данных которые мы храним в дереве
 template <class T, int N>
 class Tree {
     // Количество детей у каждого узла - N
-    // int N;
     struct Node {      // Узел дерева
         T value;         // Значение в узле
         Node *child[N];  // Дети данного узла (их N)
@@ -68,19 +64,19 @@ public:
     // Создаётся новое дерево
     Tree<T, N> *map(T (*f)(T)) {
         auto *res = new Tree<T, N>;
-        // for (T x : *this) {
-        //   res->insert(f(x));
-        // }
+         for (T x : *this) {
+           res->insert(f(x));
+         }
         return res;
     }
     // where фильтрует значения из списка l с помощью функции-фильтра h
     Tree<T, N> *where(bool (*h)(T)) {
         auto *res = new Tree<T, N>;
-        // for (T x : *this) {
-        //   if (h(x)) {
-        //     res->insert(x);
-        //   }
-        // }
+         for (T x : *this) {
+           if (h(x)) {
+             res->insert(x);
+           }
+         }
         return res;
     }
     // reduce - применяем к каждой паре значений пока не получим одно значение
@@ -109,24 +105,35 @@ public:
             T element;
             std::wcin >> element;
             insert(element);  // Добавляем элемент в дерево
-            // print(); // Текущее состояние стека
+            print(); // Текущее состояние стека
         }
     }
     void print() {
         print(root);
     }
     void print(Node *n) {
-        std::wcout << n->value << " ";
+        wprintf(L"Узел: %d\n", n->value);
+            wprintf(L"Дочернии узлы: ");
+            for (int j = 0; j < N; j++) {
+                if (n->child[j]){
+                wprintf(L"%d ", n->child[j]->value);}
+            }
+            wprintf(L"\n");
         for (int i = 0; i < N; i++) {
             if (n->child[i]) {
-                print(n->child[i]);
+                if (n->child[i]->child[0]) {
+                    print(n->child[i]);
+                }
             }
         }
+
         std::wcout << std::endl;
     }
+
+
+
 };
 
-//// Функции для работы со стеком
 // map - применение функции f к каждому элементу стека
 template <class T, int N>
 Tree<T, N> *map(T (*f)(T), Tree<T, N> &l) {

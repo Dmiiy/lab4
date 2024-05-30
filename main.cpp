@@ -13,10 +13,11 @@
 #include "common.h"
 #include "menu.h"
 #include "set.h"
+#include "tree.h"
+#include "BinaryHeap.h"
 
 using namespace std;
 
-// Функиия, которую можно применить к каждому элементу последовательности
 template <class T>
 T map_function(T x) {
     return x * x;
@@ -26,7 +27,6 @@ std::wstring map_function(std::wstring x) {
     return x + L"!";
 }
 
-// Фильтры для разных типов данных. Для каждого типа - своя
 bool where_function(int x) {
     bool result = (x % 2) == 0;
     std::wcout << L"  where: число " << x << L" чётное: " << result << std::endl;
@@ -51,7 +51,6 @@ bool where_function(const std::wstring x) {
     return result;
 }
 
-// Сложение для всех чисел (конкатенация для строк)
 template <class T>
 T reduce_function(T a, T b) {
     T result = a + b;
@@ -59,15 +58,13 @@ T reduce_function(T a, T b) {
     return result;
 }
 
-// Выполнить тестирование скорости работы алгоритмов на больших (10^4-10^5 элементов)
-// и очень больших (10^6-10^8) объемах данных
+
 // Замеряем время работы дерева
 void treeImplementationSpeed() {
-    auto begin = chrono::steady_clock::now();  // Засекаем начало работы
-
     BinaryTree<int> tree;       // Создаём дерево
     const int numbers = 10000;  // Добавим числа
     wcout << L"Количество элементов для тестирования: " << numbers << endl;
+    auto begin = chrono::steady_clock::now();  // Засекаем начало работы
     for (int i = 1; i <= numbers; i++) {
         tree.insert(i);
     }
@@ -84,8 +81,6 @@ void stack_addElementSpeed(BinaryTree<T> &tree) {
     wprintf(L"Сравнение времени добавления элементов в дерево\n");
     treeImplementationSpeed();
 }
-
-#define PRINT(x) wprintf(L"%s = %d\n", #x, x);
 
 template <class T>
 void tree_base_operations(BinaryTree<T> &tree) {
@@ -192,7 +187,7 @@ void threaded_by_fixed_traversal(BinaryTree<T> &tree) {
         tree.printAsTree();
     }
 
-    wprintf(L"Прошиваеем дерево в порядке Корень Левое Правое\n");
+    wprintf(L"Прошиваем дерево в порядке Корень Левое Правое\n");
     tree.thread();
 
     wprintf(L"Выводим прошивку - узлы в порядке прошивки\n");
@@ -270,7 +265,6 @@ void to_string_in_fixed_traversal(BinaryTree<T> &tree) {
 template <class T>
 void to_string_in_any_traversal(BinaryTree<T> &tree) {
     tree.printAsTree();
-
     wcout << L"Введите порядок обхода N-корень L-левое поддерево R-правое, например LNR: ";
     wstring order;  // Переменная для порядка обхода
     wcin >> order;  // Вводим порядок обхода с консоли
@@ -354,6 +348,35 @@ void set_insert_find_delete(Set<T> &s) {
     }
 }
 
+
+
+//n- tree
+template <class T,int N>
+void basic_operations_n_tree() {
+    Tree<T, N> tree(L"Создание дерева");
+}
+
+//Binary heap
+template <class T>
+void binary_heap_basic_operations() {
+    wprintf(L"Введите размер кучи: ");
+    int N;
+    wcin >> N;
+    MinHeap<T> h(N);
+    wcout << L"Минимальная куча" << endl;
+    for (int i = 1; i <= N; i++) {
+        T element;
+        wcout << L"Введите элемент номер " << i << ": ";
+        wcin >> element;
+        h.insert(element);
+    }
+    for (int i = 0; i < N; i=i+3){
+        wcout <<h.parent(i) << endl;
+        wcout <<h.left(i) <<" ";
+        wcout <<h.right(i) << endl;
+    }
+}
+
 template <class T>
 void set_map_reduce_where(Set<T> &s) {
     wcout << L"Множество - применение функций map, where, reduce" << endl;
@@ -429,7 +452,7 @@ void set5(Set<T> &s) {
 }
 
 template <class T>
-void tree_menu() {
+void binary_tree_menu() {
     BinaryTree<T> bt;
     MenuX<BinaryTree<T>> m{L"Возможные операции с деревом",
                            { {L"Базовые операции: вставка, поиск, удаление + Балансировка", tree_base_operations<T>},
@@ -465,20 +488,70 @@ void set_menu() {
             s};
 }
 
+template <class T>
+void binary_heap_menu() {
+    MenuItem menu[] = {{L"Базовые операции",binary_heap_basic_operations<T>}};
+    menuLoop(L"Возможные операции", _countof(menu), menu);
+}
+template<class T>
+void tree_menu() {
+    wprintf(L"Введите скольки арное дерево: \n");
+    wprintf(L"1. 3-арное дерево\n");
+    wprintf(L"2. 4-арное дерево\n");
+    wprintf(L"3. 5-арное дерево\n");
+    wprintf(L"4. 6-арное дерево\n");
+    int k;
+    wcout<< L"Ваш выбор: ";
+    std::wcin >> k;
+    switch (k) {
+        case 1:{
+            basic_operations_n_tree<T,3>();
+            break;
+        }
+        case 2:{
+            basic_operations_n_tree<T,4>();
+            break;
+        }
+        case 3:{
+            basic_operations_n_tree<T,5>();
+            break;
+        }
+        case 4:{
+            basic_operations_n_tree<T,6>();
+            break;
+        }
+        default:{
+            basic_operations_n_tree<T,2>();
+            break;
+        }
+    }
+//    MenuItem menu[] = {{L"Базовые операции",basic_operations_n_tree<T,N>}};
+//    menuLoop(L"Возможные операции", _countof(menu), menu);
+}
+
 void binaryTreeMenu() {
     Menu m{
             L"Выберите тип элементов для бинарного дерева поиска",
-            {{L"Целые числа (int)", tree_menu<int>}, {L"Вещественные числа (double)", tree_menu<double>}}
-            // {L"Комплексные числа (complex<double>)", tree_menu<std::complex<double>>},
-            //    {L"Строки/символы (string)", tree_menu<std::string>}
+            {{L"Целые числа (int)", binary_tree_menu<int>}, {L"Вещественные числа (double)", binary_tree_menu<double>}}
     };
 }
 
 void setMenu() {
     Menu m(L"Выберите тип элементов для множества", {
-            {L"Целые числа (int)", set_menu<int>}, {L"Вещественные числа (double)", set_menu<double>},
-            //{L"Комплексные числа (complex<double>)", set_menu<std::complex<double>>},
-            //{L"Строки/символы (string)", set_menu<std::wstring>}});
+            {L"Целые числа (int)", set_menu<int>}, {L"Вещественные числа (double)", set_menu<double>}
+    });
+}
+
+void treeMenu() {
+    MenuItem menu[] = {{L"Целые числа (int)",tree_menu<int>},
+                       {L"Вещественные числа (double)",tree_menu<double>}};
+    menuLoop(L"Возможные операции", _countof(menu), menu);
+}
+void binaryHeapMenu() {
+
+
+    Menu m(L"Выберите тип элементов для множества", {
+            {L"Целые числа (int)", binary_heap_menu<int>}, {L"Вещественные числа (double)", binary_heap_menu<double>}
     });
 }
 
@@ -494,6 +567,8 @@ int main() {
 
     Menu m{L"Выберите с какой структурой данных будем работать",
            { {L"Демонстрация работы с бинарным деревом поиска", binaryTreeMenu},
-             {L"Демонстрация работы с множествами", setMenu}
+             {L"Демонстрация работы с множествами", setMenu},
+             {L"Демонстрация работы с n-арным деревом поиска", treeMenu},
+             {L"Демонстрация работы с бинарной кучей", binaryHeapMenu}
            }};
 }

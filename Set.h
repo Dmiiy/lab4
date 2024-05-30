@@ -10,14 +10,12 @@
 #include "binarytree.h"
 #include "common.h"
 
-using namespace std;
-
 // Множество
 template <typename T>
 class Set {
     BinaryTree<T> tree;  // Для реализации используется бинарное дерево поиска
 public:
-    // == Конструкторы - инициализация ==
+    //Конструкторы
     Set() = default;  // Пустое множество
     // В STL е
     // Инициализация из std::set

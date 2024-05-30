@@ -11,5 +11,6 @@ add_executable(lab4 main.cpp
         Ienumerator.h
         Menu.h
         Set.h
-        Tree.h)
+        Tree.h
+        menu_two.h)
 add_subdirectory(Google_tests)
